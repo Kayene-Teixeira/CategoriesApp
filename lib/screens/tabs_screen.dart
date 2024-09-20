@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:food_categories/components/main_drawer.dart';
+import 'package:food_categories/models/meal.dart';
 import 'package:food_categories/screens/categories_screen.dart';
 import 'package:food_categories/screens/favorite_screen.dart';
 
 class TabsScreen extends StatefulWidget {
-  const TabsScreen({super.key});
+  const TabsScreen({super.key, required this.favoriteMeals});
+
+  final List<Meal> favoriteMeals;
 
   @override
   State<TabsScreen> createState() => _TabsScreenState();
@@ -12,10 +15,21 @@ class TabsScreen extends StatefulWidget {
 
 class _TabsScreenState extends State<TabsScreen> {
   int _selectedScreenIndex = 0;
-  final List<Map<String, Object>> _screens = [
-    {'title': 'Lista de Categorias', 'screen': const CategoriesScreen()},
-    {'title': 'Meus Favoritos', 'screen': const FavoriteScreen()},
-  ];
+  late List<Map<String, Object>> _screens;
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      _screens = [
+        {'title': 'Lista de Categorias', 'screen': const CategoriesScreen()},
+        {
+          'title': 'Meus Favoritos',
+          'screen': FavoriteScreen(favoriteMeals: widget.favoriteMeals)
+        },
+      ];
+    });
+  }
 
   void _selectScreen(int index) {
     setState(() {
@@ -30,8 +44,9 @@ class _TabsScreenState extends State<TabsScreen> {
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: Text(
           _screens[_selectedScreenIndex]['title'] as String,
-          style: TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.white),
         ),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       drawer: const MainDrawer(),
       body: _screens[_selectedScreenIndex]['screen'] as Widget,
@@ -40,8 +55,7 @@ class _TabsScreenState extends State<TabsScreen> {
         onTap: _selectScreen,
         unselectedItemColor: Colors.white,
         selectedItemColor: Theme.of(context).colorScheme.secondary,
-        currentIndex:
-            _selectedScreenIndex,
+        currentIndex: _selectedScreenIndex,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.category),

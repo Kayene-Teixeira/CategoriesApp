@@ -3,26 +3,39 @@ import 'package:food_categories/components/main_drawer.dart';
 import 'package:food_categories/models/settings.dart';
 
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({super.key});
+  const SettingsScreen(
+      {super.key, required this.onSettingsChanged, required this.settings});
+
+  final Function(Settings) onSettingsChanged;
+  final Settings settings;
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  Settings settings = Settings();
+  late Settings settings;
+
+  @override
+  void initState() {
+    super.initState();
+    settings = widget.settings;
+  }
 
   Widget _createSwitch(
     String title,
     String subtitle,
     bool value,
-    Function onChanged,
+    Function(bool) onChanged,
   ) {
     return SwitchListTile.adaptive(
       title: Text(title),
       subtitle: Text(subtitle),
       value: value,
-      onChanged: onChanged as void Function(bool)?,
+      onChanged: (value) {
+        onChanged(value);
+        widget.onSettingsChanged(settings);
+      },
     );
   }
 
@@ -55,7 +68,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   }),
                 ),
                 _createSwitch(
-                  'Sem Vegana',
+                  'Vegana',
                   'Só exibe refeições sem veganas!',
                   settings.isVegan,
                   (value) => setState(() {
@@ -63,7 +76,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   }),
                 ),
                 _createSwitch(
-                  'Sem Vegetariana',
+                  'Vegetariana',
                   'Só exibe refeições sem vegetarianas!',
                   settings.isVegetarian,
                   (value) => setState(() {
