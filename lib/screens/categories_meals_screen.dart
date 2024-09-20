@@ -25,6 +25,7 @@ class CategoriesMealsScreen extends StatelessWidget {
             color: Colors.white,
           ),
         ),
+        iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
       body: ListView.builder(
